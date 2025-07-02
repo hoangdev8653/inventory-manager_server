@@ -1,0 +1,29 @@
+{
+  "name": "inventory-manager",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Hoàng dev",
+  "type": "module",
+  "main": "./src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec babel-node src/server.js",
+    "dev": "nodemon --watch src --exec babel-node src/server.js"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.10"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.28.0",
+    "@babel/core": "^7.28.0",
+    "@babel/node": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "babel-plugin-dotenv": "^0.1.1"
+  }
+}
