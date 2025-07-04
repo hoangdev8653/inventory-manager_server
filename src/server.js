@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import morgan from "morgan";
 import ConnectDB from "../src/configs/connectDB.js";
+import { routers } from "./routers/index.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -14,6 +15,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
+app.use("/user", routers.user);
+app.use("/department", routers.department);
 app.get("/", (req, res) => {
   res.send("Hello, World!!!!");
 });
