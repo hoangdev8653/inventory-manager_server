@@ -1,9 +1,9 @@
 import { Pool } from "pg";
 
 const db = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "inventory_manager",
+  user: process.env.DB_USER || "postgres",
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
   password: "huyhoang123",
   port: 5432,
 });
