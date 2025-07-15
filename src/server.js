@@ -27,6 +27,7 @@ app.use("/user", routers.user);
 app.use("/department", routers.department);
 app.use("/handoverRecord", routers.handoverRecord);
 app.use("/handoverItem", routers.handoverItem);
+app.use("/representative", routers.representative);
 app.get("/", (req, res) => {
   res.send("Hello, World!!!!");
 });
