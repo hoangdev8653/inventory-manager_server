@@ -8,6 +8,7 @@ const validateToken = async (req, res, next) => {
     try {
       const decoded = await jwt.verify(token, process.env.SECRET_KEY);
       req.userId = decoded.userId;
+      req.role = decoded.role;
       next();
     } catch (err) {
       if (err.name === "JsonWebTokenError") {

@@ -3,6 +3,7 @@ import department from "./department.js";
 import handoverRecord from "./handoverRecord.js";
 import handoverItem from "./handoverItem.js";
 import representative from "./representative.js";
+import notification from "./notification.js";
 
 export const routers = {
   user,
@@ -10,4 +11,5 @@ export const routers = {
   handoverRecord,
   handoverItem,
   representative,
+  notification,
 };

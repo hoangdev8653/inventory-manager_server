@@ -77,11 +77,15 @@ const refreshToken = async (req, res, next) => {
 const updateRoleUser = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { role } = req.body;
-    const user = await userService.updateRoleUser(userId, role);
-    return res
-      .status(StatusCodes.OK)
-      .json({ status: 200, message: "Xử lý thành công", content: user });
+    const { role, id } = req.body;
+
+    const updatedUser = await userService.updateRole(userId, { role, id });
+
+    return res.status(200).json({
+      status: 200,
+      message: "Cập nhật role thành công",
+      content: updatedUser,
+    });
   } catch (error) {
     next(error);
   }

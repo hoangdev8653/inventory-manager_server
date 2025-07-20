@@ -67,6 +67,7 @@ const register = async ({ email, password, full_name, department_id }) => {
     return result.rows[0];
   } catch (error) {
     console.error("❌ Lỗi khi đăng ký người dùng:", error);
+    throw error;
   }
 };
 
@@ -78,12 +79,17 @@ const login = async ({ email, password }) => {
     if (check.rows.length === 0) {
       throw new Error("Email không tồn tại");
     }
+    const handoverRecord = await db.query("SELECT * FROM handover_records");
+    console.log(check.rows[0]);
+
+    console.log(handoverRecord.rows[0]);
+
     const user = check.rows[0];
     const isPasswordValid = await passwordMatch(password, user.password);
     if (!isPasswordValid) {
       throw new Error("Mật khẩu không chính xác");
     }
-    const { accessToken, refreshToken } = generateToken(user.id);
+    const { accessToken, refreshToken } = generateToken(user.id, user.role);
     const result = await db.query(
       "SELECT * FROM users WHERE email = $1 AND password = $2",
       [email, password]
@@ -98,8 +104,8 @@ const login = async ({ email, password }) => {
 
 const refreshToken = async ({ refreshToken }) => {
   try {
-    const { userId } = await verifyRefreshToken(refreshToken);
-    const newToken = generateToken(userId);
+    const { userId, role } = await verifyRefreshToken(refreshToken);
+    const newToken = generateToken(userId, role);
     return newToken;
   } catch (error) {
     console.error("❌ Lỗi khi làm mới token:", error);
@@ -107,21 +113,26 @@ const refreshToken = async ({ refreshToken }) => {
   }
 };
 
-const updateRole = async (id, role) => {
-  try {
-    const check = await db.query("SELECT * FROM users WHERE id = $1", [id]);
-    if (check.rows.length === 0) {
-      throw new Error("User không tồn tại");
-    }
-    const user = await db.query("UPDATE users SET role = $1 WHERE id = $2", [
-      role,
-      id,
-    ]);
-    return user;
-  } catch (error) {
-    console.error("❌ Không thể cập nhật role:", error);
-    throw error;
+const updateRole = async (userId, { role, id }) => {
+  const checkUser = await db.query("SELECT role FROM users WHERE id = $1", [
+    userId,
+  ]);
+
+  // if (checkUser.rows.length === 0 || checkUser.rows[0].role !== "admin") {
+  //   throw new Error("Bạn không có quyền cập nhật role");
+  // }
+
+  const check = await db.query("SELECT * FROM users WHERE id = $1", [id]);
+  if (check.rows.length === 0) {
+    throw new Error("Người dùng không tồn tại");
   }
+
+  const result = await db.query(
+    "UPDATE users SET role = $1 WHERE id = $2 RETURNING id, full_name,email, password,role, department_id",
+    [role, id]
+  );
+
+  return result.rows[0];
 };
 
 const deleteUser = async (id) => {

@@ -26,6 +26,18 @@ const createTables = async () => {
         FOREIGN KEY (department_id) REFERENCES departments(id)
       );
     `);
+    await db.query(`
+  CREATE TABLE IF NOT EXISTS notifications (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    handover_id UUID NOT NULL,
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (handover_id) REFERENCES handover_records(id)
+  );
+`);
 
     await db.query(`
       CREATE TABLE IF NOT EXISTS representatives (
@@ -47,10 +59,8 @@ const createTables = async () => {
         handover_date DATE NOT NULL,
         ben_a_id UUID NOT NULL REFERENCES departments(id),
         ben_b_id UUID NOT NULL REFERENCES departments(id),
-        daidien_a VARCHAR(100),
-        chucvu_a VARCHAR(100),
-        daidien_b VARCHAR(100),
-        chucvu_b VARCHAR(100),
+        representative_a_id UUID REFERENCES representatives(id),
+        representative_b_id UUID REFERENCES representatives(id),
         note TEXT,
         signed_a_at TIMESTAMP,
         signed_b_at TIMESTAMP,
